@@ -1,0 +1,21 @@
+{
+	"name": "Devcontainer",
+	"build": {
+		"context": "..",
+		"dockerfile": "../dockerfile"
+	},
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"golang.go",
+				"redhat.vscode-yaml",
+				"streetsidesoftware.code-spell-checker"
+			]
+		}
+	},
+	"features": {
+		"ghcr.io/meaningful-ooo/devcontainer-features/fish:1": {},
+		"ghcr.io/eitsupi/devcontainer-features/go-task:1": {}
+	},
+	"onCreateCommand": "task init:all"
+}
