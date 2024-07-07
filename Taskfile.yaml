@@ -24,3 +24,11 @@ tasks:
       - "./ozo-control/*.go"
     generates:
       - "./assets/**"
+
+  ozo-control-run:
+    desc: Run ozo-control
+    dir: ./ozo-control
+    cmds:
+      - go run .
+    sources:
+      - "./*.go"
