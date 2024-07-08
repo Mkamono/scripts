@@ -3,10 +3,10 @@ package config
 import (
 	"errors"
 	"fmt"
-	"io"
 	"log"
 	"log/slog"
 	"os"
+	"path/filepath"
 
 	"github.com/joho/godotenv"
 	"github.com/kelseyhightower/envconfig"
@@ -19,18 +19,24 @@ type Config struct {
 
 func New() (*Config, error) {
 	// .envファイルが存在しない場合は作成する
-	if !exist(".env") {
+	envFilePath := ".env"
+	if !exist(envFilePath) {
 		slog.Error("No .env file found")
-		err := copy(".env.template", ".env")
+		err := createEnvFile(envFilePath)
 		if err != nil {
 			log.Fatal(err)
 		}
-		slog.Error("Created .env file from .env.template")
-		slog.Error("Please fill in the .env file")
+		slog.Error("Created .env file")
+		abs, err := filepath.Abs(envFilePath)
+		if err != nil {
+			return nil, err
+		}
+
+		slog.Error(fmt.Sprintf("Please fill in USER_ID and PASSWORD in %s", abs))
 		return nil, errors.New("no .env file found")
 	}
 
-	err := godotenv.Load(".env")
+	err := godotenv.Load(envFilePath)
 	if err != nil {
 		return nil, errors.New("error loading .env file")
 	}
@@ -56,23 +62,16 @@ func exist(filename string) bool {
 	return err == nil
 }
 
-func copy(src string, dst string) error {
-	in, err := os.Open(src)
-	if err != nil {
-		return err
+func createEnvFile(filename string) error {
+	f, e := os.Create(filename)
+	if e != nil {
+		return e
 	}
-	defer in.Close()
+	defer f.Close()
 
-	out, err := os.Create(dst)
-	if err != nil {
-		return err
+	_, e = f.WriteString("OZO_CONTROL_USER_ID=\nOZO_CONTROL_PASSWORD=\n")
+	if e != nil {
+		return e
 	}
-	defer out.Close()
-
-	_, err = io.Copy(out, in)
-	if err != nil {
-		return err
-	}
-
 	return nil
 }
