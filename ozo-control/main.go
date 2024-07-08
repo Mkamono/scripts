@@ -65,6 +65,19 @@ func main() {
 					return nil
 				},
 			},
+			{
+				Name:    "uninstall",
+				Aliases: []string{"u"},
+				Usage:   "設定ファイルと実行ファイルを削除します",
+				Action: func(cCtx *cli.Context) error {
+					err := config.Uninstall()
+					if err != nil {
+						log.Fatal(err)
+					}
+					slog.Info("Successfully uninstalled")
+					return nil
+				},
+			},
 		},
 	}
 

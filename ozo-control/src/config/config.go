@@ -57,6 +57,19 @@ func New() (*Config, error) {
 	return &c, nil
 }
 
+func Uninstall() error {
+	envFilePath := ".env"
+	if !exist(envFilePath) {
+		return nil
+	}
+
+	err := os.Remove(envFilePath)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func exist(filename string) bool {
 	_, err := os.Stat(filename)
 	return err == nil
