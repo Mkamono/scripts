@@ -1,24 +1,27 @@
 version: "3"
 
+env:
+  APP: ozo-control
+
 tasks:
   build:
-    dir: ./{{.APP}}
-    cmd: env GOOS={{.OS}} GOARCH={{.ARCH}} go build -o assets/{{.OS}}-{{.ARCH}}/{{.APP}}
+    dir: ./ozo-control
+    cmd: env GOOS={{.OS}} GOARCH={{.ARCH}} go build -o assets/{{.OS}}-{{.ARCH}}/$APP
     internal: true
 
   ozo-control-build:
     desc: Build ozo-control for all platforms
     cmds:
       - task: build
-        vars: { OS: linux, ARCH: amd64, APP: ozo-control }
+        vars: { OS: linux, ARCH: amd64 }
       - task: build
-        vars: { OS: darwin, ARCH: amd64, APP: ozo-control }
+        vars: { OS: darwin, ARCH: amd64 }
       - task: build
-        vars: { OS: darwin, ARCH: arm64, APP: ozo-control }
+        vars: { OS: darwin, ARCH: arm64 }
       - task: build
-        vars: { OS: windows, ARCH: amd64, APP: ozo-control }
+        vars: { OS: windows, ARCH: amd64 }
     sources:
       - "./ozo-control/**/*.go"
       - "./ozo-control/**/.env"
     generates:
-      - "./assets/**"
+      - "./ozo-control/assets/**/*"
