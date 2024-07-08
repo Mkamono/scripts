@@ -22,13 +22,6 @@ tasks:
         vars: { OS: windows, ARCH: amd64, APP: ozo-control }
     sources:
       - "./ozo-control/**/*.go"
+      - "./ozo-control/**/.env"
     generates:
       - "./assets/**"
-
-  ozo-control-run:
-    desc: Run ozo-control
-    dir: ./ozo-control
-    cmds:
-      - go run .
-    sources:
-      - "./**/*.go"
