@@ -66,8 +66,8 @@ func main() {
 				},
 			},
 			{
-				Name:    "uninstall",
-				Aliases: []string{"u"},
+				Name:    "clean",
+				Aliases: []string{"c"},
 				Usage:   "設定ファイルと実行ファイルを削除します",
 				Action: func(cCtx *cli.Context) error {
 					err := config.Uninstall()
