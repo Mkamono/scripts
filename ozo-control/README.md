@@ -5,15 +5,14 @@
 ### apple silicon Mac
 
 ```shell
-sudo curl -o /usr/local/bin/ozo-control https://raw.githubusercontent.com/Mkamono/scripts/main/ozo-control/assets/darwin-arm64/ozo-control
+sudo curl -o /usr/local/bin/ozo-control https://raw.githubusercontent.com/Mkamono/scripts/main/ozo-control/assets/darwin-arm64/ozo-control && \
 sudo chmod +x /usr/local/bin/ozo-control
 ```
 
 uninstall
 
 ```shell
-ozo-control clean
-sudo rm /usr/local/bin/ozo-control
+ozo-control clean && sudo rm /usr/local/bin/ozo-control
 ```
 
 ## Usage
