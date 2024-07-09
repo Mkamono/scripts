@@ -3,7 +3,6 @@ package config
 import (
 	"errors"
 	"fmt"
-	"log"
 	"log/slog"
 	"os"
 	"path/filepath"
@@ -17,22 +16,51 @@ type Config struct {
 	Password string `required:"true" envconfig:"PASSWORD"`
 }
 
+const envFilePath = ".env"
+
+func Init(userId string, password string) error {
+	// .envファイルが存在する場合は削除する
+	if exist(envFilePath) {
+		err := os.Remove(envFilePath)
+		if err != nil {
+			return err
+		}
+	}
+
+	f, err := os.Create(envFilePath)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+
+	_, err = f.WriteString(fmt.Sprintf("OZO_CONTROL_USER_ID=%s\nOZO_CONTROL_PASSWORD=%s\n", userId, password))
+	if err != nil {
+		return err
+	}
+
+	envFilePathAbs, err := filepath.Abs(envFilePath)
+	if err != nil {
+		return err
+	}
+	slog.Info(fmt.Sprintf("Created .env file with USER_ID: %s, PASSWORD: %s in %s\n", userId, password, envFilePathAbs))
+	return nil
+}
+
+func Clean() error {
+	if !exist(envFilePath) {
+		return nil
+	}
+
+	err := os.Remove(envFilePath)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func New() (*Config, error) {
-	// .envファイルが存在しない場合は作成する
-	envFilePath := ".env"
 	if !exist(envFilePath) {
 		slog.Error("No .env file found")
-		err := createEnvFile(envFilePath)
-		if err != nil {
-			log.Fatal(err)
-		}
-		slog.Error("Created .env file")
-		abs, err := filepath.Abs(envFilePath)
-		if err != nil {
-			return nil, err
-		}
-
-		slog.Error(fmt.Sprintf("Please fill in USER_ID and PASSWORD in %s", abs))
 		return nil, errors.New("no .env file found")
 	}
 
@@ -52,39 +80,11 @@ func New() (*Config, error) {
 		return nil, errors.New("USER_ID and PASSWORD must be set")
 	}
 
-	slog.Info(fmt.Sprintf("Loaded config: %+v\n", c))
-
+	slog.Info(fmt.Sprintf("Loaded config: %+v", c))
 	return &c, nil
-}
-
-func Uninstall() error {
-	envFilePath := ".env"
-	if !exist(envFilePath) {
-		return nil
-	}
-
-	err := os.Remove(envFilePath)
-	if err != nil {
-		return err
-	}
-	return nil
 }
 
 func exist(filename string) bool {
 	_, err := os.Stat(filename)
 	return err == nil
-}
-
-func createEnvFile(filename string) error {
-	f, e := os.Create(filename)
-	if e != nil {
-		return e
-	}
-	defer f.Close()
-
-	_, e = f.WriteString("OZO_CONTROL_USER_ID=\nOZO_CONTROL_PASSWORD=\n")
-	if e != nil {
-		return e
-	}
-	return nil
 }

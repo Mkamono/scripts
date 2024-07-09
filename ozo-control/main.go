@@ -8,15 +8,55 @@ import (
 	"ozo-control/src"
 	"ozo-control/src/config"
 
+	"github.com/MatusOllah/slogcolor"
 	"github.com/go-rod/rod"
 	"github.com/urfave/cli/v2"
 )
 
 func main() {
+	ops := slogcolor.DefaultOptions
+	ops.SrcFileMode = slogcolor.ShortFile
+	ops.SrcFileLength = 30
+	slog.SetDefault(slog.New(slogcolor.NewHandler(os.Stderr, ops)))
 	app := &cli.App{
 		Name:  "ozo-control",
 		Usage: "Manage OZOの勤怠管理を自動化するCLIツール",
 		Commands: []*cli.Command{
+			{
+				Name:  "init",
+				Usage: "設定ファイルを作成します",
+				Flags: []cli.Flag{
+					&cli.StringFlag{
+						Name:     "user-id",
+						Aliases:  []string{"u"},
+						Usage:    "OZOのユーザーID",
+						Required: true,
+					},
+					&cli.StringFlag{
+						Name:     "password",
+						Aliases:  []string{"p"},
+						Usage:    "OZOのパスワード",
+						Required: true,
+					},
+				},
+				Action: func(cCtx *cli.Context) error {
+					userId := cCtx.String("user-id")
+					password := cCtx.String("password")
+					browser := rod.New().MustConnect()
+					_, err := src.SignIn(browser, userId, password)
+					if err != nil {
+						slog.Error("Failed to sign in")
+						slog.Error("Please check your user ID and password")
+						config.Clean()
+						return err
+					}
+					err = config.Init(userId, password)
+					if err != nil {
+						log.Fatal(err)
+					}
+					return nil
+				},
+			},
 			{
 				Name:    "check-in",
 				Aliases: []string{"i"},
@@ -70,7 +110,7 @@ func main() {
 				Aliases: []string{"c"},
 				Usage:   "設定ファイルと実行ファイルを削除します",
 				Action: func(cCtx *cli.Context) error {
-					err := config.Uninstall()
+					err := config.Clean()
 					if err != nil {
 						log.Fatal(err)
 					}
@@ -86,9 +126,12 @@ func main() {
 	}
 }
 
+const recreateErrorMsg = "Please recreate the config file using `ozo-control init -u <user-id> -p <password>`"
+
 func checkIn() error {
 	config, err := config.New()
 	if err != nil {
+		slog.Error(recreateErrorMsg)
 		return err
 	}
 
@@ -96,6 +139,7 @@ func checkIn() error {
 	defer browser.MustClose()
 	page, err := src.SignIn(browser, config.UserId, config.Password)
 	if err != nil {
+		slog.Error(recreateErrorMsg)
 		return err
 	}
 
@@ -111,6 +155,7 @@ func checkIn() error {
 func checkOut() error {
 	config, err := config.New()
 	if err != nil {
+		slog.Error(recreateErrorMsg)
 		return err
 	}
 
@@ -118,6 +163,7 @@ func checkOut() error {
 	defer browser.MustClose()
 	page, err := src.SignIn(browser, config.UserId, config.Password)
 	if err != nil {
+		slog.Error(recreateErrorMsg)
 		return err
 	}
 
@@ -135,6 +181,7 @@ func registerHoliday(override bool) error {
 
 	config, err := config.New()
 	if err != nil {
+		slog.Error(recreateErrorMsg)
 		return err
 	}
 
@@ -142,6 +189,7 @@ func registerHoliday(override bool) error {
 	defer browser.MustClose()
 	page, err := src.SignIn(browser, config.UserId, config.Password)
 	if err != nil {
+		slog.Error(recreateErrorMsg)
 		return err
 	}
 

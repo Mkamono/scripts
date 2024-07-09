@@ -36,7 +36,6 @@ func RegisterHoliday(browser *rod.Browser, page *rod.Page, override bool) (*rod.
 
 		date, err := parseRespToDate(dateStr)
 		if err != nil {
-			slog.Error(err.Error())
 			return nil, err
 		}
 
@@ -158,7 +157,7 @@ func getPublicHoliday() ([]time.Time, error) {
 const holidaySelectorInList string = "#tmp_JIYUU_SYUJITU"
 const registerButtonSelector string = "#btnRegist" // cspell:disable-line
 
-func resisterHoliday(page *rod.Page) (*rod.Page, error) {
+func resisterHoliday(page *rod.Page) *rod.Page {
 	selector := page.MustElement(holidaySelectorInList)
 	selector.MustSelect("公休")
 
@@ -167,5 +166,5 @@ func resisterHoliday(page *rod.Page) (*rod.Page, error) {
 	wait()
 	handle(true, "")
 	page.MustWaitStable()
-	return page, nil
+	return page
 }

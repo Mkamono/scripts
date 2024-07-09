@@ -32,26 +32,8 @@ go install .
 ## Quick Start
 
 ```shell
-ozo-control r # 休日登録
+ozo-control init -u <user-id> -p <password>
 ```
-
-初回実行時には、以下のようなメッセージが表示され、設定ファイルが作成されます。
-
-```shell
-2024/07/08 23:14:50 ERROR No .env file found
-2024/07/08 23:14:50 ERROR Created .env file
-2024/07/08 23:14:50 ERROR Please fill in USER_ID and PASSWORD in /Users/{username}/.env
-2024/07/08 23:14:50 no .env file found
-```
-
-このとき、`/Users/{username}/.env`を開き、情報を入力してください。
-
-もう一度、`ozo-control r`を実行すると、休日が登録されます。以下のようなメッセージが表示されれば成功です。
-
-```shell
-2024/07/08 23:15:19 INFO Successfully registered holiday
-```
-
 
 ## Usage
 
