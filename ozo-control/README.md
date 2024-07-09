@@ -118,3 +118,7 @@ Raycast用の[Script Command](./ozo-control.sh)を使用すると、Raycastか�
 ![](./assets/imgs/add-script-directory.png)
 
 ![](./assets/imgs/select-directory.png)
+
+![](./assets/imgs/raycast-command.png)
+
+![](./assets/imgs/raycast-command-result.png)
