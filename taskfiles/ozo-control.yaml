@@ -6,7 +6,7 @@ env:
 tasks:
   build:
     dir: ./ozo-control
-    cmd: env GOOS={{.OS}} GOARCH={{.ARCH}} go build -o assets/{{.OS}}-{{.ARCH}}/$APP
+    cmd: env GOOS={{.OS}} GOARCH={{.ARCH}} go build -ldflags="-s -w" -trimpath -o assets/{{.OS}}-{{.ARCH}}/$APP
     internal: true
 
   ozo-control-build:
