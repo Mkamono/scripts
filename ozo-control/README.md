@@ -97,6 +97,10 @@ ozo-control register-holiday -o
 
 Raycast用の[Script Command](./ozo-control.sh)を使用すると、Raycastから直接出勤、退勤、休日登録ができます。
 
+```shell
+git clone https://github.com/Mkamono/scripts.git
+```
+
 ![](./assets/imgs/add-script-directory.png)
 
 ![](./assets/imgs/select-directory.png)
