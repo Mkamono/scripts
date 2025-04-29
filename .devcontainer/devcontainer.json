@@ -14,7 +14,7 @@
 		}
 	},
 	"features": {
-		"ghcr.io/meaningful-ooo/devcontainer-features/fish:1": {},
+		"ghcr.io/meaningful-ooo/devcontainer-features/fish:2": {},
 		"ghcr.io/eitsupi/devcontainer-features/go-task:1": {}
 	},
 	"onCreateCommand": "task init:all"
